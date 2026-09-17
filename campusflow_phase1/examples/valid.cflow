@@ -1,0 +1,6 @@
+# Valid CampusFlow Phase 1 demonstration
+EVENT TechFest ON 2026-10-15 AT 10:00 TO 12:00;
+RESERVE Auditorium_A FOR TechFest CAPACITY 150;
+ASSIGN Projector TO TechFest;
+IF capacity >= 100 THEN RESERVE Seminar_Hall FOR Workshop CAPACITY 120;
+CANCEL OldMeet;
