@@ -14,6 +14,7 @@ from .ast_nodes import (
 )
 from .lexer import Lexer
 from .model import LexicalError, ScanResult, Token
+from .parser import ParseResult, Parser, SyntaxDiagnostic
 
 __all__ = [
     "AssignStatement",
@@ -25,9 +26,12 @@ __all__ = [
     "Lexer",
     "LexicalError",
     "NumberLiteral",
+    "ParseResult",
+    "Parser",
     "Program",
     "ReserveStatement",
     "ScanResult",
     "Token",
+    "SyntaxDiagnostic",
     "format_ast",
 ]
