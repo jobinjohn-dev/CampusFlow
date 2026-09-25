@@ -14,6 +14,16 @@ from .ast_nodes import (
 )
 from .lexer import Lexer
 from .ir import IRGenerator, IRProgram, Instruction, format_ir
+from .interpreter import (
+    ExecutionResult,
+    Interpreter,
+    RuntimeAssignment,
+    RuntimeDiagnostic,
+    RuntimeEvent,
+    RuntimeReservation,
+    RuntimeState,
+    format_runtime,
+)
 from .model import LexicalError, ScanResult, Token
 from .parser import ParseResult, Parser, SyntaxDiagnostic
 from .semantic import SemanticAnalyzer, SemanticDiagnostic, SemanticResult
@@ -33,10 +43,12 @@ __all__ = [
     "ComparisonExpression",
     "EventStatement",
     "EventSymbol",
+    "ExecutionResult",
     "IfStatement",
     "IRGenerator",
     "IRProgram",
     "Instruction",
+    "Interpreter",
     "Lexer",
     "LexicalError",
     "NumberLiteral",
@@ -45,6 +57,11 @@ __all__ = [
     "Program",
     "ReserveStatement",
     "ReservationSymbol",
+    "RuntimeAssignment",
+    "RuntimeDiagnostic",
+    "RuntimeEvent",
+    "RuntimeReservation",
+    "RuntimeState",
     "ScanResult",
     "SemanticAnalyzer",
     "SemanticDiagnostic",
@@ -54,5 +71,6 @@ __all__ = [
     "SyntaxDiagnostic",
     "format_ast",
     "format_ir",
+    "format_runtime",
     "intervals_overlap",
 ]
