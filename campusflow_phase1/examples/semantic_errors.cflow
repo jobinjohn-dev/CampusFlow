@@ -1,0 +1,6 @@
+# CampusFlow semantic-error demonstration
+EVENT Demo ON 2026-10-15 AT 10:00 TO 11:00;
+EVENT Demo ON 2026-10-16 AT 10:00 TO 11:00;
+ASSIGN Projector TO Missing;
+RESERVE Hall FOR Demo CAPACITY 0;
+CANCEL Missing;

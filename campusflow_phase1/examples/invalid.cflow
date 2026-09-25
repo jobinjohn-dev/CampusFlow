@@ -1,4 +1,4 @@
-# Invalid CampusFlow input used to demonstrate lexical errors
+# CampusFlow Phase 2 lexical-error demonstration
 EVENT TechFest ON 2026-02-30 AT 25:61 TO 12:00;
 RESERVE @Hall FOR TechFest CAPACITY 100;
 IF capacity => 80 THEN RESERVE Hall_A FOR Meet CAPACITY 80;

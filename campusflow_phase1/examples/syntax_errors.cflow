@@ -1,0 +1,3 @@
+# CampusFlow parser recovery demonstration
+EVENT MissingDate ON AT 10:00 TO 11:00;
+CANCEL ;
