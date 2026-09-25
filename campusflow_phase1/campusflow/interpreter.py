@@ -1,6 +1,7 @@
 """In-memory execution engine for CampusFlow intermediate code."""
 
 from dataclasses import dataclass, field
+from datetime import datetime
 import operator
 
 from .ir import IRProgram, Instruction
@@ -109,6 +110,11 @@ class Interpreter:
                         )
                     if label not in labels:
                         raise ValueError(f"Unknown label '{label}'")
+                    if labels[label] <= pointer:
+                        raise ValueError(
+                            f"Conditional jump to '{label}' must target a "
+                            "later instruction"
+                        )
                     if not COMPARISONS[comparison](state.last_capacity, right):
                         pointer = labels[label] + 1
                         continue
@@ -149,6 +155,24 @@ class Interpreter:
         name, date, start, end = instruction.operands
         if name in state.events:
             raise ValueError(f"Duplicate event '{name}'")
+        try:
+            parsed_date = datetime.strptime(date, "%Y-%m-%d")
+            parsed_start = datetime.strptime(start, "%H:%M").time()
+            parsed_end = datetime.strptime(end, "%H:%M").time()
+        except ValueError as error:
+            raise ValueError(
+                f"Invalid event date or time for '{name}': {error}"
+            ) from error
+        if parsed_date.strftime("%Y-%m-%d") != date:
+            raise ValueError(f"Invalid event date '{date}' for '{name}'")
+        if parsed_start.strftime("%H:%M") != start:
+            raise ValueError(f"Invalid start time '{start}' for '{name}'")
+        if parsed_end.strftime("%H:%M") != end:
+            raise ValueError(f"Invalid end time '{end}' for '{name}'")
+        if parsed_end <= parsed_start:
+            raise ValueError(
+                f"Event '{name}' end time must be later than start time"
+            )
         state.events[name] = RuntimeEvent(name, date, start, end)
         state.execution_log.append(f"Created event {name}")
 
