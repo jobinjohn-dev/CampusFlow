@@ -26,6 +26,7 @@ from .interpreter import (
 )
 from .model import LexicalError, ScanResult, Token
 from .parser import ParseResult, Parser, SyntaxDiagnostic
+from .pipeline import PipelineResult, compile_source
 from .semantic import SemanticAnalyzer, SemanticDiagnostic, SemanticResult
 from .symbols import (
     AssignmentSymbol,
@@ -54,6 +55,7 @@ __all__ = [
     "NumberLiteral",
     "ParseResult",
     "Parser",
+    "PipelineResult",
     "Program",
     "ReserveStatement",
     "ReservationSymbol",
@@ -73,4 +75,5 @@ __all__ = [
     "format_ir",
     "format_runtime",
     "intervals_overlap",
+    "compile_source",
 ]
