@@ -13,6 +13,7 @@ from .ast_nodes import (
     format_ast,
 )
 from .lexer import Lexer
+from .ir import IRGenerator, IRProgram, Instruction, format_ir
 from .model import LexicalError, ScanResult, Token
 from .parser import ParseResult, Parser, SyntaxDiagnostic
 from .semantic import SemanticAnalyzer, SemanticDiagnostic, SemanticResult
@@ -33,6 +34,9 @@ __all__ = [
     "EventStatement",
     "EventSymbol",
     "IfStatement",
+    "IRGenerator",
+    "IRProgram",
+    "Instruction",
     "Lexer",
     "LexicalError",
     "NumberLiteral",
@@ -49,5 +53,6 @@ __all__ = [
     "Token",
     "SyntaxDiagnostic",
     "format_ast",
+    "format_ir",
     "intervals_overlap",
 ]
