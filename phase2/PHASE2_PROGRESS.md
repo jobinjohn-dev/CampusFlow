@@ -42,7 +42,7 @@ The default command prints each compiler artifact in order:
 ## Functional Demonstration
 
 ```bash
-cd campusflow_phase1
+cd phase2
 python3 run.py examples/valid.cflow
 python3 run.py examples/valid.cflow --stage tokens
 python3 run.py examples/valid.cflow --stage ast
@@ -65,7 +65,7 @@ compiler stage.
 ## Verification Commands
 
 ```bash
-cd campusflow_phase1
+cd phase2
 python3 -m unittest discover -s tests -v
 python3 -m compileall -q campusflow run.py
 python3 run.py examples/valid.cflow --stage all

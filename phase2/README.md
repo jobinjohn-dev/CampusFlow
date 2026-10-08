@@ -24,7 +24,7 @@ No package installation is required.
 
 ## Quick Start
 
-From the `campusflow_phase1` directory, run the complete demonstration:
+From the `phase2` directory, run the complete demonstration:
 
 ```bash
 python3 run.py examples/valid.cflow

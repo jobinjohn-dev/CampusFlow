@@ -33,9 +33,9 @@
 ### Task 1: Immutable AST and tree formatting
 
 **Files:**
-- Create: `campusflow_phase1/campusflow/ast_nodes.py`
-- Create: `campusflow_phase1/tests/test_ast_nodes.py`
-- Modify: `campusflow_phase1/campusflow/__init__.py`
+- Create: `phase2/campusflow/ast_nodes.py`
+- Create: `phase2/tests/test_ast_nodes.py`
+- Modify: `phase2/campusflow/__init__.py`
 
 **Interfaces:**
 - Consumes: no new Phase 2 interfaces; uses only `dataclasses` and `typing`.
@@ -102,7 +102,7 @@ if __name__ == "__main__":
 
 - [ ] **Step 2: Run the new tests and verify RED**
 
-Run: `cd campusflow_phase1 && python3 -m unittest tests.test_ast_nodes -v`
+Run: `cd phase2 && python3 -m unittest tests.test_ast_nodes -v`
 
 Expected: import failure for `campusflow.ast_nodes` because the module does not exist.
 
@@ -129,18 +129,18 @@ Define the remaining nodes using the same positional convention: payload fields 
 
 - [ ] **Step 4: Run the AST tests and full suite**
 
-Run: `cd campusflow_phase1 && python3 -m unittest tests.test_ast_nodes -v`
+Run: `cd phase2 && python3 -m unittest tests.test_ast_nodes -v`
 
 Expected: 2 tests pass.
 
-Run: `cd campusflow_phase1 && python3 -m unittest discover -s tests -v`
+Run: `cd phase2 && python3 -m unittest discover -s tests -v`
 
 Expected: all old and new tests pass.
 
 - [ ] **Step 5: Commit Task 1**
 
 ```bash
-git add campusflow_phase1/campusflow/ast_nodes.py campusflow_phase1/campusflow/__init__.py campusflow_phase1/tests/test_ast_nodes.py
+git add phase2/campusflow/ast_nodes.py phase2/campusflow/__init__.py phase2/tests/test_ast_nodes.py
 git commit -m "feat: add CampusFlow abstract syntax tree"
 ```
 
@@ -149,9 +149,9 @@ git commit -m "feat: add CampusFlow abstract syntax tree"
 ### Task 2: Recursive-descent parser and syntax recovery
 
 **Files:**
-- Create: `campusflow_phase1/campusflow/parser.py`
-- Create: `campusflow_phase1/tests/test_parser.py`
-- Modify: `campusflow_phase1/campusflow/__init__.py`
+- Create: `phase2/campusflow/parser.py`
+- Create: `phase2/tests/test_parser.py`
+- Modify: `phase2/campusflow/__init__.py`
 
 **Interfaces:**
 - Consumes: `tuple[Token, ...]` from `Lexer(source).scan().tokens` and all Task 1 AST classes.
@@ -215,7 +215,7 @@ class ParserTests(unittest.TestCase):
 
 - [ ] **Step 2: Run the focused parser tests and verify RED**
 
-Run: `cd campusflow_phase1 && python3 -m unittest tests.test_parser -v`
+Run: `cd phase2 && python3 -m unittest tests.test_parser -v`
 
 Expected: import failure for `campusflow.parser`.
 
@@ -250,7 +250,7 @@ Append these tests before changing recovery code:
         self.assertIn("Expected RESERVE, ASSIGN, or CANCEL after THEN", result.errors[0].message)
 ```
 
-Run: `cd campusflow_phase1 && python3 -m unittest tests.test_parser.ParserTests.test_recovers_at_semicolon_and_parses_later_statement tests.test_parser.ParserTests.test_missing_semicolon_at_eof_reports_once_without_hanging tests.test_parser.ParserTests.test_if_rejects_nested_event_declaration -v`
+Run: `cd phase2 && python3 -m unittest tests.test_parser.ParserTests.test_recovers_at_semicolon_and_parses_later_statement tests.test_parser.ParserTests.test_missing_semicolon_at_eof_reports_once_without_hanging tests.test_parser.ParserTests.test_if_rejects_nested_event_declaration -v`
 
 Expected: at least the recovery test fails because `_synchronize()` has not been completed.
 
@@ -260,18 +260,18 @@ Implement `_synchronize()` so it always advances unless already at EOF, stops im
 
 - [ ] **Step 6: Run parser tests and full suite**
 
-Run: `cd campusflow_phase1 && python3 -m unittest tests.test_parser -v`
+Run: `cd phase2 && python3 -m unittest tests.test_parser -v`
 
 Expected: all parser tests pass.
 
-Run: `cd campusflow_phase1 && python3 -m unittest discover -s tests -v`
+Run: `cd phase2 && python3 -m unittest discover -s tests -v`
 
 Expected: all tests pass.
 
 - [ ] **Step 7: Commit Task 2**
 
 ```bash
-git add campusflow_phase1/campusflow/parser.py campusflow_phase1/campusflow/__init__.py campusflow_phase1/tests/test_parser.py
+git add phase2/campusflow/parser.py phase2/campusflow/__init__.py phase2/tests/test_parser.py
 git commit -m "feat: parse CampusFlow statements into AST"
 ```
 
@@ -280,11 +280,11 @@ git commit -m "feat: parse CampusFlow statements into AST"
 ### Task 3: Symbol table and semantic analysis
 
 **Files:**
-- Create: `campusflow_phase1/campusflow/symbols.py`
-- Create: `campusflow_phase1/campusflow/semantic.py`
-- Create: `campusflow_phase1/tests/test_symbols.py`
-- Create: `campusflow_phase1/tests/test_semantic.py`
-- Modify: `campusflow_phase1/campusflow/__init__.py`
+- Create: `phase2/campusflow/symbols.py`
+- Create: `phase2/campusflow/semantic.py`
+- Create: `phase2/tests/test_symbols.py`
+- Create: `phase2/tests/test_semantic.py`
+- Modify: `phase2/campusflow/__init__.py`
 
 **Interfaces:**
 - Consumes: a parsed `Program` from Task 2.
@@ -325,7 +325,7 @@ class SymbolTableTests(unittest.TestCase):
 
 - [ ] **Step 2: Run symbol tests and verify RED**
 
-Run: `cd campusflow_phase1 && python3 -m unittest tests.test_symbols -v`
+Run: `cd phase2 && python3 -m unittest tests.test_symbols -v`
 
 Expected: import failure for `campusflow.symbols`.
 
@@ -335,7 +335,7 @@ Use `datetime.strptime(value, "%H:%M").time()` inside `intervals_overlap`. Retur
 
 - [ ] **Step 4: Run symbol tests and verify GREEN**
 
-Run: `cd campusflow_phase1 && python3 -m unittest tests.test_symbols -v`
+Run: `cd phase2 && python3 -m unittest tests.test_symbols -v`
 
 Expected: all symbol tests pass.
 
@@ -425,7 +425,7 @@ class SemanticTests(unittest.TestCase):
 
 - [ ] **Step 6: Run semantic tests and verify RED**
 
-Run: `cd campusflow_phase1 && python3 -m unittest tests.test_semantic -v`
+Run: `cd phase2 && python3 -m unittest tests.test_semantic -v`
 
 Expected: import failure for `campusflow.semantic`.
 
@@ -435,18 +435,18 @@ Implement one visitor method per AST statement. Add an error helper that records
 
 - [ ] **Step 8: Run semantic tests and full suite**
 
-Run: `cd campusflow_phase1 && python3 -m unittest tests.test_symbols tests.test_semantic -v`
+Run: `cd phase2 && python3 -m unittest tests.test_symbols tests.test_semantic -v`
 
 Expected: all symbol and semantic tests pass.
 
-Run: `cd campusflow_phase1 && python3 -m unittest discover -s tests -v`
+Run: `cd phase2 && python3 -m unittest discover -s tests -v`
 
 Expected: all tests pass.
 
 - [ ] **Step 9: Commit Task 3**
 
 ```bash
-git add campusflow_phase1/campusflow/symbols.py campusflow_phase1/campusflow/semantic.py campusflow_phase1/campusflow/__init__.py campusflow_phase1/tests/test_symbols.py campusflow_phase1/tests/test_semantic.py
+git add phase2/campusflow/symbols.py phase2/campusflow/semantic.py phase2/campusflow/__init__.py phase2/tests/test_symbols.py phase2/tests/test_semantic.py
 git commit -m "feat: add CampusFlow semantic analysis"
 ```
 
@@ -455,9 +455,9 @@ git commit -m "feat: add CampusFlow semantic analysis"
 ### Task 4: Intermediate representation and conditional lowering
 
 **Files:**
-- Create: `campusflow_phase1/campusflow/ir.py`
-- Create: `campusflow_phase1/tests/test_ir.py`
-- Modify: `campusflow_phase1/campusflow/__init__.py`
+- Create: `phase2/campusflow/ir.py`
+- Create: `phase2/tests/test_ir.py`
+- Modify: `phase2/campusflow/__init__.py`
 
 **Interfaces:**
 - Consumes: a semantically valid `Program` from Task 1/3.
@@ -515,7 +515,7 @@ class IrTests(unittest.TestCase):
 
 - [ ] **Step 2: Run IR tests and verify RED**
 
-Run: `cd campusflow_phase1 && python3 -m unittest tests.test_ir -v`
+Run: `cd phase2 && python3 -m unittest tests.test_ir -v`
 
 Expected: import failure for `campusflow.ir`.
 
@@ -525,18 +525,18 @@ Generate monotonically increasing labels named `if_end_1`, `if_end_2`, and so on
 
 - [ ] **Step 4: Run IR tests and full suite**
 
-Run: `cd campusflow_phase1 && python3 -m unittest tests.test_ir -v`
+Run: `cd phase2 && python3 -m unittest tests.test_ir -v`
 
 Expected: all IR tests pass.
 
-Run: `cd campusflow_phase1 && python3 -m unittest discover -s tests -v`
+Run: `cd phase2 && python3 -m unittest discover -s tests -v`
 
 Expected: all tests pass.
 
 - [ ] **Step 5: Commit Task 4**
 
 ```bash
-git add campusflow_phase1/campusflow/ir.py campusflow_phase1/campusflow/__init__.py campusflow_phase1/tests/test_ir.py
+git add phase2/campusflow/ir.py phase2/campusflow/__init__.py phase2/tests/test_ir.py
 git commit -m "feat: generate CampusFlow intermediate code"
 ```
 
@@ -545,9 +545,9 @@ git commit -m "feat: generate CampusFlow intermediate code"
 ### Task 5: In-memory interpreter and runtime diagnostics
 
 **Files:**
-- Create: `campusflow_phase1/campusflow/interpreter.py`
-- Create: `campusflow_phase1/tests/test_interpreter.py`
-- Modify: `campusflow_phase1/campusflow/__init__.py`
+- Create: `phase2/campusflow/interpreter.py`
+- Create: `phase2/tests/test_interpreter.py`
+- Modify: `phase2/campusflow/__init__.py`
 
 **Interfaces:**
 - Consumes: `IRProgram` and `Instruction` from Task 4 plus `intervals_overlap` from Task 3.
@@ -619,7 +619,7 @@ class InterpreterTests(unittest.TestCase):
 
 - [ ] **Step 2: Run interpreter tests and verify RED**
 
-Run: `cd campusflow_phase1 && python3 -m unittest tests.test_interpreter -v`
+Run: `cd phase2 && python3 -m unittest tests.test_interpreter -v`
 
 Expected: import failure for `campusflow.interpreter`.
 
@@ -651,7 +651,7 @@ Append tests that construct IR directly:
         self.assertIn("capacity is not available", result.errors[0].message)
 ```
 
-Run: `cd campusflow_phase1 && python3 -m unittest tests.test_interpreter.InterpreterTests.test_unknown_opcode_is_runtime_error tests.test_interpreter.InterpreterTests.test_condition_without_capacity_is_runtime_error -v`
+Run: `cd phase2 && python3 -m unittest tests.test_interpreter.InterpreterTests.test_unknown_opcode_is_runtime_error tests.test_interpreter.InterpreterTests.test_condition_without_capacity_is_runtime_error -v`
 
 Expected: both tests fail until defensive checks are added.
 
@@ -661,18 +661,18 @@ Validate opcode names, required operand counts/types, label existence, and `last
 
 - [ ] **Step 6: Run interpreter tests and full suite**
 
-Run: `cd campusflow_phase1 && python3 -m unittest tests.test_interpreter -v`
+Run: `cd phase2 && python3 -m unittest tests.test_interpreter -v`
 
 Expected: all interpreter tests pass.
 
-Run: `cd campusflow_phase1 && python3 -m unittest discover -s tests -v`
+Run: `cd phase2 && python3 -m unittest discover -s tests -v`
 
 Expected: all tests pass.
 
 - [ ] **Step 7: Commit Task 5**
 
 ```bash
-git add campusflow_phase1/campusflow/interpreter.py campusflow_phase1/campusflow/__init__.py campusflow_phase1/tests/test_interpreter.py
+git add phase2/campusflow/interpreter.py phase2/campusflow/__init__.py phase2/tests/test_interpreter.py
 git commit -m "feat: execute CampusFlow intermediate code"
 ```
 
@@ -681,11 +681,11 @@ git commit -m "feat: execute CampusFlow intermediate code"
 ### Task 6: Pipeline coordinator and staged CLI
 
 **Files:**
-- Create: `campusflow_phase1/campusflow/pipeline.py`
-- Create: `campusflow_phase1/tests/test_pipeline.py`
-- Modify: `campusflow_phase1/campusflow/cli.py`
-- Modify: `campusflow_phase1/campusflow/__init__.py`
-- Modify: `campusflow_phase1/tests/test_cli.py`
+- Create: `phase2/campusflow/pipeline.py`
+- Create: `phase2/tests/test_pipeline.py`
+- Modify: `phase2/campusflow/cli.py`
+- Modify: `phase2/campusflow/__init__.py`
+- Modify: `phase2/tests/test_cli.py`
 
 **Interfaces:**
 - Consumes: all previous stages and their formatters.
@@ -739,7 +739,7 @@ class PipelineTests(unittest.TestCase):
 
 - [ ] **Step 2: Run pipeline tests and verify RED**
 
-Run: `cd campusflow_phase1 && python3 -m unittest tests.test_pipeline -v`
+Run: `cd phase2 && python3 -m unittest tests.test_pipeline -v`
 
 Expected: import failure for `campusflow.pipeline`.
 
@@ -785,7 +785,7 @@ Update `run_source(self, source, *arguments)` to append `arguments` after the te
 
 - [ ] **Step 5: Run CLI tests and verify RED**
 
-Run: `cd campusflow_phase1 && python3 -m unittest tests.test_cli -v`
+Run: `cd phase2 && python3 -m unittest tests.test_cli -v`
 
 Expected: failures because `--stage` and Phase 2 output sections are not implemented.
 
@@ -795,18 +795,18 @@ Retain the existing token table in a `format_tokens()` helper. Add section helpe
 
 - [ ] **Step 7: Run pipeline/CLI tests and full suite**
 
-Run: `cd campusflow_phase1 && python3 -m unittest tests.test_pipeline tests.test_cli -v`
+Run: `cd phase2 && python3 -m unittest tests.test_pipeline tests.test_cli -v`
 
 Expected: all pipeline and CLI tests pass.
 
-Run: `cd campusflow_phase1 && python3 -m unittest discover -s tests -v`
+Run: `cd phase2 && python3 -m unittest discover -s tests -v`
 
 Expected: all tests pass.
 
 - [ ] **Step 8: Commit Task 6**
 
 ```bash
-git add campusflow_phase1/campusflow/pipeline.py campusflow_phase1/campusflow/cli.py campusflow_phase1/campusflow/__init__.py campusflow_phase1/tests/test_pipeline.py campusflow_phase1/tests/test_cli.py
+git add phase2/campusflow/pipeline.py phase2/campusflow/cli.py phase2/campusflow/__init__.py phase2/tests/test_pipeline.py phase2/tests/test_cli.py
 git commit -m "feat: expose staged CampusFlow compiler CLI"
 ```
 
@@ -815,14 +815,14 @@ git commit -m "feat: expose staged CampusFlow compiler CLI"
 ### Task 7: Demonstration programs, end-to-end tests, and Phase 2 documentation
 
 **Files:**
-- Modify: `campusflow_phase1/examples/valid.cflow`
-- Modify: `campusflow_phase1/examples/invalid.cflow`
-- Create: `campusflow_phase1/examples/syntax_errors.cflow`
-- Create: `campusflow_phase1/examples/semantic_errors.cflow`
-- Create: `campusflow_phase1/examples/resource_conflict.cflow`
-- Create: `campusflow_phase1/tests/test_examples.py`
-- Modify: `campusflow_phase1/README.md`
-- Create: `campusflow_phase1/PHASE2_PROGRESS.md`
+- Modify: `phase2/examples/valid.cflow`
+- Modify: `phase2/examples/invalid.cflow`
+- Create: `phase2/examples/syntax_errors.cflow`
+- Create: `phase2/examples/semantic_errors.cflow`
+- Create: `phase2/examples/resource_conflict.cflow`
+- Create: `phase2/tests/test_examples.py`
+- Modify: `phase2/README.md`
+- Create: `phase2/PHASE2_PROGRESS.md`
 
 **Interfaces:**
 - Consumes: the completed CLI from Task 6.
@@ -880,7 +880,7 @@ class ExampleTests(unittest.TestCase):
 
 - [ ] **Step 2: Run example tests and verify RED**
 
-Run: `cd campusflow_phase1 && python3 -m unittest tests.test_examples -v`
+Run: `cd phase2 && python3 -m unittest tests.test_examples -v`
 
 Expected: missing-file failures and a semantic failure in the old `valid.cflow`, which references undeclared `Workshop` and `OldMeet`.
 
@@ -903,7 +903,7 @@ Keep `invalid.cflow` focused on its existing invalid date, invalid time, illegal
 
 - [ ] **Step 4: Run example tests and verify GREEN**
 
-Run: `cd campusflow_phase1 && python3 -m unittest tests.test_examples -v`
+Run: `cd phase2 && python3 -m unittest tests.test_examples -v`
 
 Expected: both end-to-end tests pass, including all subtests.
 
@@ -920,7 +920,7 @@ Create `PHASE2_PROGRESS.md` with a table mapping the rubric components to module
 Run:
 
 ```bash
-cd campusflow_phase1
+cd phase2
 python3 run.py examples/valid.cflow
 python3 run.py examples/valid.cflow --stage tokens
 python3 run.py examples/valid.cflow --stage ast
@@ -936,11 +936,11 @@ Expected: the valid commands exit `0`; each invalid demonstration exits `1` with
 
 - [ ] **Step 8: Run the complete automated suite and static checks**
 
-Run: `cd campusflow_phase1 && python3 -m unittest discover -s tests -v`
+Run: `cd phase2 && python3 -m unittest discover -s tests -v`
 
 Expected: every test passes with an `OK` summary.
 
-Run: `cd campusflow_phase1 && python3 -m compileall -q campusflow run.py`
+Run: `cd phase2 && python3 -m compileall -q campusflow run.py`
 
 Expected: exit code `0` and no output.
 
@@ -951,7 +951,7 @@ Expected: exit code `0` and no whitespace errors.
 - [ ] **Step 9: Commit Task 7**
 
 ```bash
-git add campusflow_phase1/examples campusflow_phase1/tests/test_examples.py campusflow_phase1/README.md campusflow_phase1/PHASE2_PROGRESS.md
+git add phase2/examples phase2/tests/test_examples.py phase2/README.md phase2/PHASE2_PROGRESS.md
 git commit -m "docs: add CampusFlow phase 2 demonstrations"
 ```
 
@@ -984,7 +984,7 @@ Record in the implementation handoff:
 Run:
 
 ```bash
-cd campusflow_phase1
+cd phase2
 python3 --version
 python3 -m unittest discover -s tests -v
 python3 -m compileall -q campusflow run.py
@@ -998,7 +998,7 @@ Expected: Python is at least 3.10, all tests pass, compileall exits `0`, and the
 Run each command separately and inspect `$?` immediately:
 
 ```bash
-cd campusflow_phase1
+cd phase2
 python3 run.py examples/invalid.cflow --stage all
 python3 run.py examples/syntax_errors.cflow --stage all
 python3 run.py examples/semantic_errors.cflow --stage all
