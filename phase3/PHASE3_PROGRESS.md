@@ -1,79 +1,78 @@
-# CampusFlow Phase 3 Final Implementation Progress
+# CampusFlow Phase 3 Completion and Rubric Map
 
-Phase 3 begins from the verified Phase 2 compiler so the final implementation
-can be developed and tested independently. All runtime modules use Python's
-standard library.
+The Phase 3 software is complete and integrated. The map below distinguishes
+verified software/evidence from final report and packaging artifacts that are
+generated after this evidence baseline.
 
-## Current Milestone
+## Phase 3 Activities
 
-The independent Phase 3 baseline is complete. Optimizer, benchmarking,
-expanded test evidence, and final submission artifacts are implemented in the
-next milestones and recorded here only after their verification passes.
+| Required activity | Completed implementation and evidence |
+|---|---|
+| Complete remaining functionality | IR optimizer in `campusflow/optimizer.py`; benchmark support in `campusflow/metrics.py` and `cli.py` |
+| Integrate all modules | `campusflow/pipeline.py` runs lexer → parser → semantic analysis → IR → optimizer → interpreter |
+| Test valid inputs | `valid.cflow`, `optimization_demo.cflow`, and positive unit/integration tests |
+| Test invalid inputs | `invalid.cflow`, `syntax_errors.cflow`, `semantic_errors.cflow`, `resource_conflict.cflow` |
+| Test boundary cases | `boundary_cases.cflow`, lexer limits, capacity 1, equal/adjacent times, CLI iteration validation |
+| Test error conditions | Positioned lexical/syntax/semantic/optimizer/runtime diagnostics and pipeline gating tests |
+| Test complex inputs | Six-event `complex_schedule.cflow` with four optimized conditions, cancellation, and resource reuse |
+| Meaningful errors | Diagnostics include stage, message, line, and column; CLI exits nonzero |
+| Evaluate performance | `--benchmark N` records instruction reduction, median time, peak memory, and equivalence |
+| Complete documentation | `README.md`, this rubric map, evidence files, final report, presentation, and user instructions |
 
-| Rubric component | Implementation | Test evidence | Demonstration |
-|---|---|---|---|
-| Lexical Analysis | `campusflow/lexer.py`, `model.py` | `tests/test_lexer.py` | `--stage tokens`, `invalid.cflow` |
-| Syntax Analysis | `campusflow/parser.py` recursive-descent parser | `tests/test_parser.py` | `--stage ast`, `syntax_errors.cflow` |
-| Abstract Syntax Tree | `campusflow/ast_nodes.py` records and formatter | `tests/test_ast_nodes.py` | AST section of `valid.cflow` |
-| Semantic Analysis | `campusflow/semantic.py` | `tests/test_semantic.py` | `semantic_errors.cflow` |
-| Symbol Table | `campusflow/symbols.py` | `tests/test_symbols.py` | Semantic success and symbol counts |
-| Intermediate Code | `campusflow/ir.py` linear IR | `tests/test_ir.py` | `--stage ir` |
-| Interpreter | `campusflow/interpreter.py` | `tests/test_interpreter.py` | `--stage run` |
-| Error Handling | Stage diagnostics and pipeline short-circuiting | `tests/test_pipeline.py`, `test_cli.py` | Four invalid demonstration files |
-| Test Cases | Unit, integration, CLI, and example tests | `tests/` | Full `unittest` command |
-| Intermediate Results | Tokens, AST, semantic result, and IR | Formatter tests and CLI tests | Default `all` stage |
-| Module-wise Explanation | Module Guide in `README.md` | Manual review | `README.md` |
-| Functional Demonstration | `run.py` staged CLI | `tests/test_examples.py` | `examples/valid.cflow` |
+## Phase 3 Deliverables
 
-## Implemented Language Features
+| Deliverable | Status and location |
+|---|---|
+| Complete working project | Verified — entire `phase3/` directory; entry point `run.py` |
+| Complete source code | Verified — `phase3/campusflow/` |
+| Test cases | Verified — `phase3/tests/` and `phase3/examples/` |
+| Test results | Captured — `phase3/evidence/test_results.txt` |
+| Output evidence | Captured — four files in `phase3/evidence/` |
+| Final project report | Artifact-build target — `phase3/deliverables/CampusFlow_Phase3_Final_Report.docx` |
+| Presentation | Artifact-build target — `phase3/deliverables/CampusFlow_Phase3_Presentation.pptx` |
+| User instructions | Verified — `phase3/README.md` |
+| Submission archive | Packaging target — `phase3/deliverables/CampusFlow_Phase3_Submission.zip` |
 
-- Event declaration with date and start/end times
-- Resource reservation with capacity
-- Equipment/item assignment
-- Event cancellation with resource release
-- Capacity comparisons with all six comparison operators
-- Conditional execution through IR jumps and labels
-- Duplicate, declaration, value, cancellation, and overlap validation
-- Lexical, syntax, semantic, and defensive runtime diagnostics
+## Compiler Concepts Implemented
 
-## Intermediate Results
+| Concept | Module | Main verification |
+|---|---|---|
+| Lexical analysis | `lexer.py`, `model.py` | `test_lexer.py`, token stage |
+| Syntax analysis | `parser.py` | `test_parser.py`, AST stage |
+| Abstract syntax tree | `ast_nodes.py` | `test_ast_nodes.py` |
+| Semantic analysis | `semantic.py` | `test_semantic.py` |
+| Symbol table | `symbols.py` | `test_symbols.py` |
+| Intermediate code | `ir.py` | `test_ir.py`, IR stage |
+| Code optimization | `optimizer.py` | `test_optimizer.py`, optimized stage |
+| Interpreter/runtime | `interpreter.py` | `test_interpreter.py`, run stage |
+| Error handling | All stages | pipeline, CLI, and invalid-example tests |
+| Performance evaluation | `metrics.py` | `test_metrics.py`, benchmark evidence |
 
-The default command prints each compiler artifact in order:
+## Review 3 Criteria
 
-1. Positioned token table
-2. Indented abstract syntax tree
-3. Semantic-analysis status and symbol counts
-4. Numbered intermediate instructions
-5. Final runtime schedule and execution log
+| Review criterion | Evidence |
+|---|---|
+| Project Completion | All compiler stages, optimizer, execution, metrics, documentation, and packaging are delivered |
+| Functional Correctness | Full automated suite plus execution-equivalence `PASS` in benchmark evidence |
+| Technical Complexity | Recursive-descent parsing, scoped validation, IR lowering, forward data-flow optimization, interpreter, metrics |
+| Compiler Integration | `compile_source` safely connects every compiler stage and executes optimized IR |
+| Innovation | Campus scheduling DSL, conservative capacity folding, and correctness-aware benchmarking |
+| Code Quality | Typed dataclasses, separated modules, deterministic formatters, standard-library-only implementation |
+| Testing | Unit, integration, subprocess, regression, boundary, invalid, complex, and timing-noise tests |
+| Demonstration | Three Phase 3 demo inputs and reproducible commands in `README.md` |
+| Documentation | User guide, module explanation, evidence, report, presentation, and this rubric map |
+| Viva | Architecture, algorithm, commands, limitations, and outputs are explicitly explained in the report and presentation |
 
-## Functional Demonstration
+## Reproduce the Evidence
 
-```bash
-cd phase3
-python3 run.py examples/valid.cflow
-python3 run.py examples/valid.cflow --stage tokens
-python3 run.py examples/valid.cflow --stage ast
-python3 run.py examples/valid.cflow --stage ir
-python3 run.py examples/valid.cflow --stage run
-```
-
-## Error Demonstration
-
-```bash
-python3 run.py examples/invalid.cflow
-python3 run.py examples/syntax_errors.cflow
-python3 run.py examples/semantic_errors.cflow
-python3 run.py examples/resource_conflict.cflow
-```
-
-Each invalid command is expected to exit with status `1` at its intended
-compiler stage.
-
-## Verification Commands
+From `phase3/`:
 
 ```bash
-cd phase3
 python3 -m unittest discover -s tests -v
-python3 -m compileall -q campusflow run.py
-python3 run.py examples/valid.cflow --stage all
+python3 run.py examples/optimization_demo.cflow --stage optimized
+python3 run.py examples/complex_schedule.cflow --stage all
+python3 run.py examples/complex_schedule.cflow --benchmark 100
 ```
+
+The captured versions of these outputs are stored in `evidence/` without
+machine-specific absolute input paths.

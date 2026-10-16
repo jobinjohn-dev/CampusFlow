@@ -9,9 +9,9 @@ folder so that Phase 1, Phase 2, and Phase 3 can be demonstrated independently.
 - `phase1/` — the original lexical-analysis submission.
 - `phase2/` — the working compiler pipeline with parsing, AST construction,
   semantic analysis, symbol tables, intermediate code, and execution.
-- `phase3/` — the independent final-project implementation, extending the
-  compiler with optimization, performance measurement, expanded validation,
-  and final submission evidence.
+- `phase3/` — the complete final software implementation with optimized
+  execution, correctness-aware performance measurement, expanded tests, and
+  reproducible evidence; final report and packaging are stored with it.
 - `deliverables/phase2/` — the Phase 2 project ZIP, Word report, and submission
   notes.
 
@@ -36,6 +36,7 @@ python3 -m unittest discover -s tests -v
 ```bash
 cd phase3
 python3 run.py examples/valid.cflow
+python3 run.py examples/complex_schedule.cflow --benchmark 100
 python3 -m unittest discover -s tests -v
 ```
 

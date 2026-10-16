@@ -1,0 +1,33 @@
+Command: python3 run.py examples/optimization_demo.cflow --stage optimized
+
+CampusFlow compilation: examples/optimization_demo.cflow
+
+ORIGINAL INTERMEDIATE CODE
+--------------------------
+0000  CREATE_EVENT 'Demo', '2026-10-15', '10:00', '11:00'  @2:1
+0001  RESERVE_RESOURCE 'MainHall', 'Demo', 100  @3:1
+0002  JUMP_IF_FALSE '>=', 100, 'if_end_1'  @4:4
+0003  ASSIGN_ITEM 'Projector', 'Demo'  @4:25
+0004  LABEL 'if_end_1'  @4:1
+0005  JUMP_IF_FALSE '<', 50, 'if_end_2'  @5:4
+0006  ASSIGN_ITEM 'BackupSpeaker', 'Demo'  @5:23
+0007  LABEL 'if_end_2'  @5:1
+
+OPTIMIZATION SUMMARY
+--------------------
+Original instructions: 8
+Optimized instructions: 3
+Instructions removed: 5
+Instruction reduction: 62.50%
+Conditions folded true: 1
+Conditions folded false: 1
+Transformations:
+- 4:4 folded condition true
+- 5:4 folded condition false
+
+OPTIMIZED INTERMEDIATE CODE
+---------------------------
+0000  CREATE_EVENT 'Demo', '2026-10-15', '10:00', '11:00'  @2:1
+0001  RESERVE_RESOURCE 'MainHall', 'Demo', 100  @3:1
+0002  ASSIGN_ITEM 'Projector', 'Demo'  @4:25
+

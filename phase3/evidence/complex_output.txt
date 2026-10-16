@@ -1,0 +1,333 @@
+Command: python3 run.py examples/complex_schedule.cflow --stage all
+
+CampusFlow compilation: examples/complex_schedule.cflow
+
+TOKENS
+------
+LINE:COL   TOKEN              LEXEME
+--------   ----------------   ------------------------
+2:1        KEYWORD            EVENT
+2:7        IDENTIFIER         Opening
+2:15       KEYWORD            ON
+2:18       DATE               2026-10-25
+2:29       KEYWORD            AT
+2:32       TIME               09:00
+2:38       KEYWORD            TO
+2:41       TIME               10:30
+2:46       SEMICOLON          ;
+3:1        KEYWORD            EVENT
+3:7        IDENTIFIER         Workshop
+3:16       KEYWORD            ON
+3:19       DATE               2026-10-25
+3:30       KEYWORD            AT
+3:33       TIME               10:00
+3:39       KEYWORD            TO
+3:42       TIME               12:00
+3:47       SEMICOLON          ;
+4:1        KEYWORD            EVENT
+4:7        IDENTIFIER         Lunch
+4:13       KEYWORD            ON
+4:16       DATE               2026-10-25
+4:27       KEYWORD            AT
+4:30       TIME               12:00
+4:36       KEYWORD            TO
+4:39       TIME               13:00
+4:44       SEMICOLON          ;
+5:1        KEYWORD            EVENT
+5:7        IDENTIFIER         Panel
+5:13       KEYWORD            ON
+5:16       DATE               2026-10-25
+5:27       KEYWORD            AT
+5:30       TIME               13:00
+5:36       KEYWORD            TO
+5:39       TIME               14:00
+5:44       SEMICOLON          ;
+6:1        KEYWORD            EVENT
+6:7        IDENTIFIER         Expo
+6:12       KEYWORD            ON
+6:15       DATE               2026-10-25
+6:26       KEYWORD            AT
+6:29       TIME               14:00
+6:35       KEYWORD            TO
+6:38       TIME               16:00
+6:43       SEMICOLON          ;
+7:1        KEYWORD            EVENT
+7:7        IDENTIFIER         Closing
+7:15       KEYWORD            ON
+7:18       DATE               2026-10-25
+7:29       KEYWORD            AT
+7:32       TIME               16:00
+7:38       KEYWORD            TO
+7:41       TIME               17:00
+7:46       SEMICOLON          ;
+9:1        KEYWORD            RESERVE
+9:9        IDENTIFIER         MainHall
+9:18       KEYWORD            FOR
+9:22       IDENTIFIER         Opening
+9:30       KEYWORD            CAPACITY
+9:39       NUMBER             200
+9:42       SEMICOLON          ;
+10:1        KEYWORD            ASSIGN
+10:8        IDENTIFIER         WelcomeScreen
+10:22       KEYWORD            TO
+10:25       IDENTIFIER         Opening
+10:32       SEMICOLON          ;
+11:1        KEYWORD            IF
+11:4        KEYWORD            capacity
+11:13       OPERATOR           >=
+11:16       NUMBER             150
+11:20       KEYWORD            THEN
+11:25       KEYWORD            RESERVE
+11:33       IDENTIFIER         LabA
+11:38       KEYWORD            FOR
+11:42       IDENTIFIER         Workshop
+11:51       KEYWORD            CAPACITY
+11:60       NUMBER             80
+11:62       SEMICOLON          ;
+12:1        KEYWORD            IF
+12:4        KEYWORD            capacity
+12:13       OPERATOR           <
+12:15       NUMBER             50
+12:18       KEYWORD            THEN
+12:23       KEYWORD            ASSIGN
+12:30       IDENTIFIER         BackupMic
+12:40       KEYWORD            TO
+12:43       IDENTIFIER         Workshop
+12:51       SEMICOLON          ;
+13:1        KEYWORD            CANCEL
+13:8        IDENTIFIER         Opening
+13:15       SEMICOLON          ;
+15:1        KEYWORD            RESERVE
+15:9        IDENTIFIER         MainHall
+15:18       KEYWORD            FOR
+15:22       IDENTIFIER         Workshop
+15:31       KEYWORD            CAPACITY
+15:40       NUMBER             100
+15:43       SEMICOLON          ;
+16:1        KEYWORD            ASSIGN
+16:8        IDENTIFIER         Projector
+16:18       KEYWORD            TO
+16:21       IDENTIFIER         Workshop
+16:29       SEMICOLON          ;
+17:1        KEYWORD            RESERVE
+17:9        IDENTIFIER         Cafeteria
+17:19       KEYWORD            FOR
+17:23       IDENTIFIER         Lunch
+17:29       KEYWORD            CAPACITY
+17:38       NUMBER             120
+17:41       SEMICOLON          ;
+18:1        KEYWORD            ASSIGN
+18:8        IDENTIFIER         Catering
+18:17       KEYWORD            TO
+18:20       IDENTIFIER         Lunch
+18:25       SEMICOLON          ;
+19:1        KEYWORD            RESERVE
+19:9        IDENTIFIER         MainHall
+19:18       KEYWORD            FOR
+19:22       IDENTIFIER         Panel
+19:28       KEYWORD            CAPACITY
+19:37       NUMBER             90
+19:39       SEMICOLON          ;
+20:1        KEYWORD            IF
+20:4        KEYWORD            capacity
+20:13       OPERATOR           ==
+20:16       NUMBER             90
+20:19       KEYWORD            THEN
+20:24       KEYWORD            ASSIGN
+20:31       IDENTIFIER         Microphone
+20:42       KEYWORD            TO
+20:45       IDENTIFIER         Panel
+20:50       SEMICOLON          ;
+21:1        KEYWORD            RESERVE
+21:9        IDENTIFIER         ExpoCenter
+21:20       KEYWORD            FOR
+21:24       IDENTIFIER         Expo
+21:29       KEYWORD            CAPACITY
+21:38       NUMBER             300
+21:41       SEMICOLON          ;
+22:1        KEYWORD            IF
+22:4        KEYWORD            capacity
+22:13       OPERATOR           !=
+22:16       NUMBER             300
+22:20       KEYWORD            THEN
+22:25       KEYWORD            ASSIGN
+22:32       IDENTIFIER         ExtraDisplay
+22:45       KEYWORD            TO
+22:48       IDENTIFIER         Expo
+22:52       SEMICOLON          ;
+23:1        KEYWORD            RESERVE
+23:9        IDENTIFIER         MainHall
+23:18       KEYWORD            FOR
+23:22       IDENTIFIER         Closing
+23:30       KEYWORD            CAPACITY
+23:39       NUMBER             200
+23:42       SEMICOLON          ;
+24:1        KEYWORD            ASSIGN
+24:8        IDENTIFIER         StageLights
+24:20       KEYWORD            TO
+24:23       IDENTIFIER         Closing
+24:30       SEMICOLON          ;
+25:1        EOF                <end>
+
+No lexical errors.
+Total tokens: 162
+
+ABSTRACT SYNTAX TREE
+--------------------
+Program
+  Event Opening date=2026-10-25 start=09:00 end=10:30 @2:1
+  Event Workshop date=2026-10-25 start=10:00 end=12:00 @3:1
+  Event Lunch date=2026-10-25 start=12:00 end=13:00 @4:1
+  Event Panel date=2026-10-25 start=13:00 end=14:00 @5:1
+  Event Expo date=2026-10-25 start=14:00 end=16:00 @6:1
+  Event Closing date=2026-10-25 start=16:00 end=17:00 @7:1
+  Reserve MainHall for=Opening capacity=200 @9:1
+  Assign WelcomeScreen to=Opening @10:1
+  If @11:1
+    Compare >= @11:4
+      Capacity @11:4
+      Number 150 @11:16
+    Then
+      Reserve LabA for=Workshop capacity=80 @11:25
+  If @12:1
+    Compare < @12:4
+      Capacity @12:4
+      Number 50 @12:15
+    Then
+      Assign BackupMic to=Workshop @12:23
+  Cancel Opening @13:1
+  Reserve MainHall for=Workshop capacity=100 @15:1
+  Assign Projector to=Workshop @16:1
+  Reserve Cafeteria for=Lunch capacity=120 @17:1
+  Assign Catering to=Lunch @18:1
+  Reserve MainHall for=Panel capacity=90 @19:1
+  If @20:1
+    Compare == @20:4
+      Capacity @20:4
+      Number 90 @20:16
+    Then
+      Assign Microphone to=Panel @20:24
+  Reserve ExpoCenter for=Expo capacity=300 @21:1
+  If @22:1
+    Compare != @22:4
+      Capacity @22:4
+      Number 300 @22:16
+    Then
+      Assign ExtraDisplay to=Expo @22:25
+  Reserve MainHall for=Closing capacity=200 @23:1
+  Assign StageLights to=Closing @24:1
+
+SEMANTIC ANALYSIS
+-----------------
+Semantic analysis: passed.
+Events: 6, reservations: 5, assignments: 3
+
+ORIGINAL INTERMEDIATE CODE
+--------------------------
+0000  CREATE_EVENT 'Opening', '2026-10-25', '09:00', '10:30'  @2:1
+0001  CREATE_EVENT 'Workshop', '2026-10-25', '10:00', '12:00'  @3:1
+0002  CREATE_EVENT 'Lunch', '2026-10-25', '12:00', '13:00'  @4:1
+0003  CREATE_EVENT 'Panel', '2026-10-25', '13:00', '14:00'  @5:1
+0004  CREATE_EVENT 'Expo', '2026-10-25', '14:00', '16:00'  @6:1
+0005  CREATE_EVENT 'Closing', '2026-10-25', '16:00', '17:00'  @7:1
+0006  RESERVE_RESOURCE 'MainHall', 'Opening', 200  @9:1
+0007  ASSIGN_ITEM 'WelcomeScreen', 'Opening'  @10:1
+0008  JUMP_IF_FALSE '>=', 150, 'if_end_1'  @11:4
+0009  RESERVE_RESOURCE 'LabA', 'Workshop', 80  @11:25
+0010  LABEL 'if_end_1'  @11:1
+0011  JUMP_IF_FALSE '<', 50, 'if_end_2'  @12:4
+0012  ASSIGN_ITEM 'BackupMic', 'Workshop'  @12:23
+0013  LABEL 'if_end_2'  @12:1
+0014  CANCEL_EVENT 'Opening'  @13:1
+0015  RESERVE_RESOURCE 'MainHall', 'Workshop', 100  @15:1
+0016  ASSIGN_ITEM 'Projector', 'Workshop'  @16:1
+0017  RESERVE_RESOURCE 'Cafeteria', 'Lunch', 120  @17:1
+0018  ASSIGN_ITEM 'Catering', 'Lunch'  @18:1
+0019  RESERVE_RESOURCE 'MainHall', 'Panel', 90  @19:1
+0020  JUMP_IF_FALSE '==', 90, 'if_end_3'  @20:4
+0021  ASSIGN_ITEM 'Microphone', 'Panel'  @20:24
+0022  LABEL 'if_end_3'  @20:1
+0023  RESERVE_RESOURCE 'ExpoCenter', 'Expo', 300  @21:1
+0024  JUMP_IF_FALSE '!=', 300, 'if_end_4'  @22:4
+0025  ASSIGN_ITEM 'ExtraDisplay', 'Expo'  @22:25
+0026  LABEL 'if_end_4'  @22:1
+0027  RESERVE_RESOURCE 'MainHall', 'Closing', 200  @23:1
+0028  ASSIGN_ITEM 'StageLights', 'Closing'  @24:1
+
+OPTIMIZATION SUMMARY
+--------------------
+Original instructions: 29
+Optimized instructions: 19
+Instructions removed: 10
+Instruction reduction: 34.48%
+Conditions folded true: 2
+Conditions folded false: 2
+Transformations:
+- 11:4 folded condition true
+- 12:4 folded condition false
+- 20:4 folded condition true
+- 22:4 folded condition false
+
+OPTIMIZED INTERMEDIATE CODE
+---------------------------
+0000  CREATE_EVENT 'Opening', '2026-10-25', '09:00', '10:30'  @2:1
+0001  CREATE_EVENT 'Workshop', '2026-10-25', '10:00', '12:00'  @3:1
+0002  CREATE_EVENT 'Lunch', '2026-10-25', '12:00', '13:00'  @4:1
+0003  CREATE_EVENT 'Panel', '2026-10-25', '13:00', '14:00'  @5:1
+0004  CREATE_EVENT 'Expo', '2026-10-25', '14:00', '16:00'  @6:1
+0005  CREATE_EVENT 'Closing', '2026-10-25', '16:00', '17:00'  @7:1
+0006  RESERVE_RESOURCE 'MainHall', 'Opening', 200  @9:1
+0007  ASSIGN_ITEM 'WelcomeScreen', 'Opening'  @10:1
+0008  RESERVE_RESOURCE 'LabA', 'Workshop', 80  @11:25
+0009  CANCEL_EVENT 'Opening'  @13:1
+0010  RESERVE_RESOURCE 'MainHall', 'Workshop', 100  @15:1
+0011  ASSIGN_ITEM 'Projector', 'Workshop'  @16:1
+0012  RESERVE_RESOURCE 'Cafeteria', 'Lunch', 120  @17:1
+0013  ASSIGN_ITEM 'Catering', 'Lunch'  @18:1
+0014  RESERVE_RESOURCE 'MainHall', 'Panel', 90  @19:1
+0015  ASSIGN_ITEM 'Microphone', 'Panel'  @20:24
+0016  RESERVE_RESOURCE 'ExpoCenter', 'Expo', 300  @21:1
+0017  RESERVE_RESOURCE 'MainHall', 'Closing', 200  @23:1
+0018  ASSIGN_ITEM 'StageLights', 'Closing'  @24:1
+
+FINAL RUNTIME STATE
+-------------------
+Opening [CANCELLED] 2026-10-25 09:00-10:30
+Workshop [ACTIVE] 2026-10-25 10:00-12:00
+  RESERVATION LabA capacity=80
+  RESERVATION MainHall capacity=100
+  ASSIGNMENT Projector
+Lunch [ACTIVE] 2026-10-25 12:00-13:00
+  RESERVATION Cafeteria capacity=120
+  ASSIGNMENT Catering
+Panel [ACTIVE] 2026-10-25 13:00-14:00
+  RESERVATION MainHall capacity=90
+  ASSIGNMENT Microphone
+Expo [ACTIVE] 2026-10-25 14:00-16:00
+  RESERVATION ExpoCenter capacity=300
+Closing [ACTIVE] 2026-10-25 16:00-17:00
+  RESERVATION MainHall capacity=200
+  ASSIGNMENT StageLights
+
+EXECUTION LOG
+-------------
+- Created event Opening
+- Created event Workshop
+- Created event Lunch
+- Created event Panel
+- Created event Expo
+- Created event Closing
+- Reserved MainHall for Opening with capacity 200
+- Assigned WelcomeScreen to Opening
+- Reserved LabA for Workshop with capacity 80
+- Cancelled event Opening
+- Reserved MainHall for Workshop with capacity 100
+- Assigned Projector to Workshop
+- Reserved Cafeteria for Lunch with capacity 120
+- Assigned Catering to Lunch
+- Reserved MainHall for Panel with capacity 90
+- Assigned Microphone to Panel
+- Reserved ExpoCenter for Expo with capacity 300
+- Reserved MainHall for Closing with capacity 200
+- Assigned StageLights to Closing
+

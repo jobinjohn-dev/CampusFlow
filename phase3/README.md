@@ -1,77 +1,42 @@
-# CampusFlow DSL Compiler — Phase 3
+# CampusFlow DSL Compiler — Phase 3 Final Implementation
 
-## Overview
-
-CampusFlow is a small domain-specific language for declaring campus events,
-reserving venues, assigning equipment, applying capacity conditions, and
-cancelling events. This Phase 3 baseline preserves the complete Phase 2
-compiler pipeline while final-project capabilities are added independently:
+CampusFlow is a small compiler and interpreter for describing campus events,
+venue reservations, equipment assignments, capacity-based actions, and event
+cancellation. Phase 3 is the complete project: it performs lexical, syntax,
+and semantic analysis; produces intermediate code; safely optimizes that code;
+executes it; and measures original-versus-optimized behavior.
 
 ```text
-source -> tokens -> AST -> semantic analysis -> IR -> execution
+source -> lexer -> parser/AST -> semantic analysis -> original IR
+       -> optimizer -> optimized IR -> interpreter -> runtime state
 ```
 
-The compiler reports source positions at every error stage and executes valid
-programs in a deterministic in-memory runtime. It uses only the Python
-standard library.
-
-## Phase 3 Implementation Milestones
-
-- IR optimization with original-versus-optimized output
-- Optimized execution with equivalence validation
-- Execution-time and peak-memory measurement
-- Boundary, complex, invalid, and malformed-IR tests
-- Complete output evidence, report, presentation, and submission package
-
-The first milestone establishes this independently runnable baseline. The
-following milestones add and verify each final-project capability.
+The implementation uses only the Python standard library.
 
 ## Requirements
 
 - Python 3.10 or newer
-- A terminal, including the terminal built into Visual Studio Code
-
-No package installation is required.
+- A terminal (the Visual Studio Code terminal works)
+- No package installation
 
 ## Quick Start
 
-From the `phase3` directory, run the complete demonstration:
+macOS or Linux, from the repository root:
 
 ```bash
-python3 run.py examples/valid.cflow
+cd phase3
+python3 run.py examples/complex_schedule.cflow
 ```
 
-On Windows, use `py` when `python3` is unavailable:
+Windows PowerShell, from the repository root:
 
 ```powershell
-py run.py examples\valid.cflow
+cd phase3
+py run.py examples\complex_schedule.cflow
 ```
 
-The valid demonstration exits with status `0`. Compiler or runtime
-diagnostics exit with status `1`; command-line or file errors exit with
-status `2`.
-
-## CLI Stages
-
-The default stage is `all`:
-
-```bash
-python3 run.py examples/valid.cflow
-python3 run.py examples/valid.cflow --stage tokens
-python3 run.py examples/valid.cflow --stage ast
-python3 run.py examples/valid.cflow --stage ir
-python3 run.py examples/valid.cflow --stage run
-```
-
-| Stage | Result |
-|---|---|
-| `tokens` | Token table and lexical diagnostics |
-| `ast` | Parsed abstract syntax tree |
-| `ir` | Semantically validated intermediate instructions |
-| `run` | Final runtime state and execution log |
-| `all` | Tokens, AST, semantic result, IR, and execution |
-
-The pipeline stops before an unsafe later stage whenever it finds errors.
+The full command prints tokens, AST, semantic results, original IR,
+optimization results, optimized IR, final runtime state, and an execution log.
 
 ## Language Grammar
 
@@ -96,124 +61,174 @@ conditional_statement = reserve_statement
                       | cancel_statement ;
 ```
 
-Keywords are case-insensitive. Identifiers are case-sensitive. A `#` begins
-a comment that continues to the end of its line.
+Keywords are case-insensitive, identifiers are case-sensitive, and `#`
+starts a comment. Dates use `YYYY-MM-DD`; times use 24-hour `HH:MM`.
 
-## Statement Semantics
+## Meaning of Statements
 
-- `EVENT` declares a uniquely named, single-day event whose end time is later
-  than its start time.
-- `RESERVE` books a resource for an active declared event with a positive
-  capacity.
-- `ASSIGN` attaches an item to an active declared event.
-- `CANCEL` marks an event cancelled and releases its current reservations and
-  assignments.
-- `IF capacity ... THEN ...` compares the capacity from the most recent
-  successful reservation and conditionally executes one `RESERVE`, `ASSIGN`,
-  or `CANCEL` statement.
+- `EVENT` declares a unique, single-day event with an end after its start.
+- `RESERVE` books a resource for an active event with positive capacity.
+- `ASSIGN` attaches an item to an active event.
+- `CANCEL` cancels an event and releases its reservations and assignments.
+- `IF capacity ... THEN ...` compares the most recent successful reservation's
+  capacity and conditionally executes one reservation, assignment, or cancel.
 
-The same resource or item cannot be used by overlapping active events.
-Intervals are half-open, so `10:00 TO 11:00` and `11:00 TO 12:00` do not
-conflict.
+Resources and items cannot be shared by overlapping active events. Intervals
+are half-open, so an event ending at `11:00` does not conflict with one starting
+at `11:00`.
 
-## Compiler Pipeline
+## Compiler Architecture
 
-1. The lexer classifies source characters into positioned tokens.
-2. The recursive-descent parser validates grammar and constructs an AST.
-3. Semantic analysis builds a symbol table and checks declarations, time
-   ranges, capacities, cancellations, and schedule conflicts.
-4. The IR generator emits readable linear instructions and conditional jumps.
-5. The interpreter executes those instructions in an in-memory runtime.
+1. `lexer.py` recognizes positioned tokens and reports recoverable lexical
+   errors.
+2. `parser.py` uses recursive descent to validate grammar and build immutable
+   nodes from `ast_nodes.py`.
+3. `semantic.py` and `symbols.py` validate declarations, capacities, times,
+   cancellation, and scheduling conflicts.
+4. `ir.py` lowers the AST to linear instructions and forward conditional
+   jumps.
+5. `optimizer.py` validates IR control flow and applies safe constant-condition
+   folding.
+6. `interpreter.py` executes optimized IR in an in-memory runtime.
+7. `metrics.py` compares execution results and records instruction count,
+   median execution time, and peak traced memory.
+8. `pipeline.py` gates every stage so an error prevents unsafe later work;
+   `cli.py` exposes the pipeline in the terminal.
+
+## Optimization Algorithm
+
+The optimizer performs a forward data-flow pass over the linear IR. It tracks
+the last statically known reservation capacity. For each forward
+`JUMP_IF_FALSE`:
+
+- a condition known to be true loses its jump and label but keeps its body;
+- a condition known to be false loses its jump, body, and label;
+- a condition without a provable capacity is preserved unchanged;
+- a preserved or nested control-flow region invalidates capacity knowledge;
+- malformed, duplicate, missing, backward, or unknown control flow produces a
+  positioned diagnostic and leaves the original program unchanged.
+
+This is conservative: it optimizes only when the result is provable. Execution
+equivalence is independently checked by benchmark mode.
+
+## CLI Stages
+
+```bash
+python3 run.py examples/valid.cflow --stage tokens
+python3 run.py examples/valid.cflow --stage ast
+python3 run.py examples/valid.cflow --stage ir
+python3 run.py examples/optimization_demo.cflow --stage optimized
+python3 run.py examples/valid.cflow --stage run
+python3 run.py examples/valid.cflow --stage all
+```
+
+| Stage | Output |
+|---|---|
+| `tokens` | Token table and lexical status |
+| `ast` | Abstract syntax tree |
+| `ir` | Semantically validated original intermediate code |
+| `optimized` | Original IR, optimization summary, and optimized IR |
+| `run` | Final runtime state and execution log |
+| `all` | Every compiler artifact in order (default) |
+
+Windows uses the same options with `py` and backslashes in paths.
+
+## Benchmark Mode
+
+Append a positive iteration count to a successful `optimized` or `all` run:
+
+```bash
+python3 run.py examples/complex_schedule.cflow --benchmark 100
+```
+
+```powershell
+py run.py examples\complex_schedule.cflow --benchmark 100
+```
+
+The report includes original and optimized instruction counts, reduction,
+median execution time, measured ratio, peak memory, and `PASS`/`FAIL` execution
+equivalence. Timing varies by machine and is reported as a measurement, not a
+promise that every optimized run is faster.
+
+## Demonstration Files
+
+| File | Purpose |
+|---|---|
+| `valid.cflow` | All core statement types and successful execution |
+| `optimization_demo.cflow` | One provably true and one false condition |
+| `boundary_cases.cflow` | Capacity 1, equality operators, adjacent intervals |
+| `complex_schedule.cflow` | Six events, conditions, cancellation, and reuse |
+| `invalid.cflow` | Lexical errors |
+| `syntax_errors.cflow` | Parser errors and recovery |
+| `semantic_errors.cflow` | Declaration and value errors |
+| `resource_conflict.cflow` | Overlapping resource rejection |
+
+Useful live-demonstration commands:
+
+```bash
+python3 run.py examples/optimization_demo.cflow --stage optimized
+python3 run.py examples/boundary_cases.cflow
+python3 run.py examples/complex_schedule.cflow
+python3 run.py examples/complex_schedule.cflow --benchmark 100
+```
+
+## Exit Statuses and Errors
+
+- `0`: requested compilation, execution, and optional benchmark succeeded.
+- `1`: lexical, syntax, semantic, optimizer, or runtime diagnostics occurred.
+- `2`: invalid command-line argument or unreadable input file.
+
+Every compiler diagnostic includes a one-based line and column. The pipeline
+stops at the failing stage; benchmark output is never produced for invalid
+input.
 
 ## Module Guide
 
 | Module | Responsibility |
 |---|---|
-| `model.py` | Token and lexical diagnostic records |
+| `model.py` | Tokens and lexical diagnostics |
 | `lexer.py` | Lexical analysis and recovery |
-| `ast_nodes.py` | Immutable AST records and tree formatting |
-| `parser.py` | Grammar validation and syntax recovery |
+| `ast_nodes.py` | Immutable AST and tree formatter |
+| `parser.py` | Recursive-descent parsing and recovery |
 | `symbols.py` | Event, reservation, and assignment symbols |
-| `semantic.py` | Source-ordered semantic validation |
-| `ir.py` | Intermediate instructions and lowering |
-| `interpreter.py` | Runtime state and instruction execution |
-| `pipeline.py` | Safe compiler-stage coordination |
-| `cli.py` | Stage selection and terminal formatting |
+| `semantic.py` | Source-ordered semantic checks |
+| `ir.py` | IR instructions, generation, and formatting |
+| `optimizer.py` | IR validation, folding, and statistics |
+| `interpreter.py` | Runtime validation, state, and execution |
+| `metrics.py` | Equivalence-aware time and memory measurement |
+| `pipeline.py` | Compiler stage coordination |
+| `cli.py` | Terminal arguments and output formatting |
+| `run.py` | Executable entry point |
 
-## Error Stages
+## Testing
 
-- **Lexical:** illegal characters, invalid dates/times, unknown operators, and
-  unterminated strings.
-- **Syntax:** missing or unexpected grammar elements. Recovery resumes after
-  the next semicolon.
-- **Semantic:** duplicate or undeclared events, invalid capacities/time ranges,
-  cancelled references, and scheduling conflicts.
-- **Runtime:** defensive checks for malformed IR or invalid state transitions.
-
-Every diagnostic includes a one-based line and column.
-
-## Demonstration Files
+macOS or Linux:
 
 ```bash
-python3 run.py examples/valid.cflow
-python3 run.py examples/invalid.cflow
-python3 run.py examples/syntax_errors.cflow
-python3 run.py examples/semantic_errors.cflow
-python3 run.py examples/resource_conflict.cflow
-```
-
-| File | Demonstrates |
-|---|---|
-| `valid.cflow` | Complete successful pipeline and all statement forms |
-| `invalid.cflow` | Lexical diagnostics |
-| `syntax_errors.cflow` | Parser diagnostics and recovery |
-| `semantic_errors.cflow` | Declaration and value validation |
-| `resource_conflict.cflow` | Overlapping resource rejection |
-
-## Running Tests
-
-```bash
+cd phase3
 python3 -m unittest discover -s tests -v
+python3 -m compileall -q campusflow tests run.py
 ```
 
-The suite includes unit tests for every compiler stage plus subprocess-based
-CLI and end-to-end example tests.
+Windows PowerShell:
 
-## Example Output
-
-The full output includes a token table. The following is an abbreviated
-literal excerpt from the valid demonstration:
-
-```text
-ABSTRACT SYNTAX TREE
---------------------
-Program
-  Event TechFest date=2026-10-15 start=10:00 end=12:00 @2:1
-
-SEMANTIC ANALYSIS
------------------
-Semantic analysis: passed.
-
-INTERMEDIATE CODE
------------------
-0000  CREATE_EVENT 'TechFest', '2026-10-15', '10:00', '12:00'  @2:1
-0001  CREATE_EVENT 'Workshop', '2026-10-15', '13:00', '15:00'  @3:1
-0002  CREATE_EVENT 'OldMeet', '2026-10-16', '09:00', '10:00'  @4:1
-
-FINAL RUNTIME STATE
--------------------
-TechFest [ACTIVE] 2026-10-15 10:00-12:00
-  RESERVATION Auditorium_A capacity=150
-  ASSIGNMENT Projector
-Workshop [ACTIVE] 2026-10-15 13:00-15:00
-  RESERVATION Seminar_Hall capacity=120
-OldMeet [CANCELLED] 2026-10-16 09:00-10:00
+```powershell
+cd phase3
+py -m unittest discover -s tests -v
+py -m compileall -q campusflow tests run.py
 ```
 
-## Current Limitations
+The tests cover units, pipeline gating, CLI subprocesses, valid/invalid input,
+boundaries, malformed IR, optimizer safety, timing noise, equivalence, and
+complex end-to-end execution. Recorded outputs are in `evidence/`.
 
-- Execution is in memory and is not connected to a real calendar or database.
-- Events are single-day and times do not cross midnight.
-- Conditions use only the built-in most-recent `capacity` value and an integer.
-- An `IF` body contains exactly one reservation, assignment, or cancellation.
-- The language has no user-defined variables, functions, or nested scopes.
+## Limitations
+
+- State is in memory; there is no external database or calendar integration.
+- Events are single-day and cannot cross midnight.
+- `capacity` is the only built-in conditional value.
+- An `IF` body contains one non-`EVENT` statement; nesting is not in the source
+  grammar.
+- There are no user variables, functions, loops, or generated machine code.
+- Benchmark values are environment-dependent and should be interpreted with
+  the recorded platform information.
