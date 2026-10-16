@@ -25,6 +25,7 @@ from .interpreter import (
     format_runtime,
 )
 from .model import LexicalError, ScanResult, Token
+from .metrics import BenchmarkResult, benchmark_ir, format_benchmark
 from .optimizer import (
     IROptimizer,
     OptimizationResult,
@@ -46,6 +47,7 @@ from .symbols import (
 __all__ = [
     "AssignStatement",
     "AssignmentSymbol",
+    "BenchmarkResult",
     "CancelStatement",
     "CapacityExpression",
     "ComparisonExpression",
@@ -82,7 +84,9 @@ __all__ = [
     "SymbolTable",
     "Token",
     "SyntaxDiagnostic",
+    "benchmark_ir",
     "format_ast",
+    "format_benchmark",
     "format_ir",
     "format_optimization",
     "format_runtime",
