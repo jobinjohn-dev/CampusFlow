@@ -1,0 +1,7 @@
+# Minimum capacity, equality operators, and adjacent time intervals
+EVENT First ON 2026-10-20 AT 10:00 TO 11:00;
+EVENT Second ON 2026-10-20 AT 11:00 TO 12:00;
+RESERVE SharedRoom FOR First CAPACITY 1;
+IF capacity == 1 THEN ASSIGN AccessCard TO First;
+IF capacity != 1 THEN ASSIGN NeverUsed TO First;
+RESERVE SharedRoom FOR Second CAPACITY 1;
