@@ -1,0 +1,5 @@
+# CampusFlow overlapping-resource demonstration
+EVENT MorningTalk ON 2026-10-15 AT 10:00 TO 12:00;
+EVENT LabSession ON 2026-10-15 AT 11:00 TO 13:00;
+RESERVE Auditorium_A FOR MorningTalk CAPACITY 150;
+RESERVE Auditorium_A FOR LabSession CAPACITY 80;

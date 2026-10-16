@@ -1,0 +1,24 @@
+# Full Phase 3 demonstration with six events and resource reuse
+EVENT Opening ON 2026-10-25 AT 09:00 TO 10:30;
+EVENT Workshop ON 2026-10-25 AT 10:00 TO 12:00;
+EVENT Lunch ON 2026-10-25 AT 12:00 TO 13:00;
+EVENT Panel ON 2026-10-25 AT 13:00 TO 14:00;
+EVENT Expo ON 2026-10-25 AT 14:00 TO 16:00;
+EVENT Closing ON 2026-10-25 AT 16:00 TO 17:00;
+
+RESERVE MainHall FOR Opening CAPACITY 200;
+ASSIGN WelcomeScreen TO Opening;
+IF capacity >= 150 THEN RESERVE LabA FOR Workshop CAPACITY 80;
+IF capacity < 50 THEN ASSIGN BackupMic TO Workshop;
+CANCEL Opening;
+
+RESERVE MainHall FOR Workshop CAPACITY 100;
+ASSIGN Projector TO Workshop;
+RESERVE Cafeteria FOR Lunch CAPACITY 120;
+ASSIGN Catering TO Lunch;
+RESERVE MainHall FOR Panel CAPACITY 90;
+IF capacity == 90 THEN ASSIGN Microphone TO Panel;
+RESERVE ExpoCenter FOR Expo CAPACITY 300;
+IF capacity != 300 THEN ASSIGN ExtraDisplay TO Expo;
+RESERVE MainHall FOR Closing CAPACITY 200;
+ASSIGN StageLights TO Closing;

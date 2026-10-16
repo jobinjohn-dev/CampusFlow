@@ -2,15 +2,20 @@
 
 CampusFlow is an educational domain-specific language compiler for campus
 event scheduling. The repository keeps each assessed submission in its own
-folder so that Phase 1 and Phase 2 can be demonstrated independently.
+folder so that Phase 1, Phase 2, and Phase 3 can be demonstrated independently.
 
 ## Repository structure
 
 - `phase1/` — the original lexical-analysis submission.
 - `phase2/` — the working compiler pipeline with parsing, AST construction,
   semantic analysis, symbol tables, intermediate code, and execution.
+- `phase3/` — the complete final software implementation with optimized
+  execution, correctness-aware performance measurement, expanded tests, and
+  reproducible evidence; final report and packaging are stored with it.
 - `deliverables/phase2/` — the Phase 2 project ZIP, Word report, and submission
   notes.
+- `deliverables/phase3/` — the final project ZIP, Word report, presentation, and
+  submission instructions.
 
 ## Run Phase 1
 
@@ -28,5 +33,14 @@ python3 run.py examples/valid.cflow
 python3 -m unittest discover -s tests -v
 ```
 
-On Windows, use `py` instead of `python3` when necessary. Both phases require
+## Run Phase 3
+
+```bash
+cd phase3
+python3 run.py examples/valid.cflow
+python3 run.py examples/complex_schedule.cflow --benchmark 100
+python3 -m unittest discover -s tests -v
+```
+
+On Windows, use `py` instead of `python3` when necessary. All phases require
 Python 3.10 or newer and use only the standard library.
