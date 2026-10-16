@@ -25,6 +25,13 @@ from .interpreter import (
     format_runtime,
 )
 from .model import LexicalError, ScanResult, Token
+from .optimizer import (
+    IROptimizer,
+    OptimizationResult,
+    OptimizationStats,
+    OptimizerDiagnostic,
+    format_optimization,
+)
 from .parser import ParseResult, Parser, SyntaxDiagnostic
 from .pipeline import PipelineResult, compile_source
 from .semantic import SemanticAnalyzer, SemanticDiagnostic, SemanticResult
@@ -50,9 +57,13 @@ __all__ = [
     "IRProgram",
     "Instruction",
     "Interpreter",
+    "IROptimizer",
     "Lexer",
     "LexicalError",
     "NumberLiteral",
+    "OptimizationResult",
+    "OptimizationStats",
+    "OptimizerDiagnostic",
     "ParseResult",
     "Parser",
     "PipelineResult",
@@ -73,6 +84,7 @@ __all__ = [
     "SyntaxDiagnostic",
     "format_ast",
     "format_ir",
+    "format_optimization",
     "format_runtime",
     "intervals_overlap",
     "compile_source",
