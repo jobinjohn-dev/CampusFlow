@@ -6,6 +6,7 @@ from pathlib import Path
 from .ast_nodes import format_ast
 from .interpreter import format_runtime
 from .ir import format_ir
+from .metrics import benchmark_ir, format_benchmark
 from .model import ScanResult
 from .optimizer import format_optimization
 from .pipeline import STAGES, compile_source
@@ -36,7 +37,10 @@ def format_tokens(scan: ScanResult) -> str:
 
 
 def format_result(
-    source_name: str, source: str, stage: str = "all"
+    source_name: str,
+    source: str,
+    stage: str = "all",
+    benchmark_iterations: int | None = None,
 ) -> tuple[str, int]:
     """Compile source and return requested formatted output and exit code."""
     result = compile_source(source, stage=stage)
@@ -119,6 +123,22 @@ def format_result(
     if stage in {"run", "all"} and result.execution is not None:
         sections.append(format_runtime(result.execution.state))
 
+    if (
+        benchmark_iterations is not None
+        and result.ir is not None
+        and result.optimized_ir is not None
+    ):
+        benchmark = benchmark_ir(
+            result.ir,
+            result.optimized_ir,
+            iterations=benchmark_iterations,
+        )
+        sections.append(
+            "PERFORMANCE MEASUREMENT\n"
+            "-----------------------\n"
+            f"{format_benchmark(benchmark)}"
+        )
+
     return "\n\n".join(sections), 0
 
 
@@ -129,6 +149,16 @@ def _format_diagnostics(title: str, diagnostics: tuple[object, ...]) -> list[str
             f"{diagnostic.line}:{diagnostic.column}  {diagnostic.message}"
         )
     return lines
+
+
+def _positive_int(value: str) -> int:
+    try:
+        number = int(value)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError("must be an integer") from error
+    if number <= 0:
+        raise argparse.ArgumentTypeError("must be greater than zero")
+    return number
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -142,6 +172,12 @@ def main(argv: list[str] | None = None) -> int:
         default="all",
         help="Last compiler artifact to display (default: all)",
     )
+    parser.add_argument(
+        "--benchmark",
+        type=_positive_int,
+        metavar="N",
+        help="Measure original and optimized execution N times",
+    )
     arguments = parser.parse_args(argv)
 
     try:
@@ -150,7 +186,10 @@ def main(argv: list[str] | None = None) -> int:
         parser.error(str(error))
 
     output, exit_code = format_result(
-        str(arguments.source_file), source, arguments.stage
+        str(arguments.source_file),
+        source,
+        arguments.stage,
+        arguments.benchmark,
     )
     print(output)
     return exit_code

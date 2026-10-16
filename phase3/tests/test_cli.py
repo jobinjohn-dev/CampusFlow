@@ -106,6 +106,54 @@ class CliTests(unittest.TestCase):
         self.assertIn("Illegal character '@'", completed.stdout)
         self.assertEqual(completed.stderr, "")
 
+    def test_benchmark_appends_performance_and_equivalence(self):
+        completed = self.run_source(
+            "\n".join((
+                "EVENT Demo ON 2026-10-15 AT 10:00 TO 11:00;",
+                "RESERVE Hall FOR Demo CAPACITY 50;",
+            )),
+            "--benchmark",
+            "3",
+        )
+
+        self.assertEqual(completed.returncode, 0)
+        self.assertIn("PERFORMANCE MEASUREMENT", completed.stdout)
+        self.assertIn("Benchmark iterations: 3", completed.stdout)
+        self.assertIn("Execution equivalence: PASS", completed.stdout)
+
+    def test_benchmark_rejects_nonpositive_iterations(self):
+        for value in ("0", "-1"):
+            with self.subTest(value=value):
+                completed = self.run_source(
+                    "EVENT Demo ON 2026-10-15 AT 10:00 TO 11:00;",
+                    "--benchmark",
+                    value,
+                )
+                self.assertEqual(completed.returncode, 2)
+                self.assertIn("must be greater than zero", completed.stderr)
+
+    def test_failed_compilation_does_not_run_benchmark(self):
+        for source in ("RESERVE @Hall;", "CANCEL ;", "CANCEL Missing;"):
+            with self.subTest(source=source):
+                completed = self.run_source(source, "--benchmark", "3")
+                self.assertEqual(completed.returncode, 1)
+                self.assertNotIn("PERFORMANCE MEASUREMENT", completed.stdout)
+
+    def test_benchmark_keeps_requested_successful_stage_boundaries(self):
+        completed = self.run_source(
+            "EVENT Demo ON 2026-10-15 AT 10:00 TO 11:00;",
+            "--stage",
+            "optimized",
+            "--benchmark",
+            "1",
+        )
+
+        self.assertEqual(completed.returncode, 0)
+        self.assertIn("ORIGINAL INTERMEDIATE CODE", completed.stdout)
+        self.assertIn("PERFORMANCE MEASUREMENT", completed.stdout)
+        self.assertNotIn("TOKENS", completed.stdout)
+        self.assertNotIn("FINAL RUNTIME STATE", completed.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()
