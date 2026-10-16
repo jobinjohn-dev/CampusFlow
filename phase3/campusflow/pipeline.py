@@ -6,11 +6,12 @@ from .interpreter import ExecutionResult, Interpreter
 from .ir import IRGenerator, IRProgram
 from .lexer import Lexer
 from .model import ScanResult
+from .optimizer import IROptimizer, OptimizationResult, OptimizerDiagnostic
 from .parser import ParseResult, Parser
 from .semantic import SemanticAnalyzer, SemanticResult
 
 
-STAGES = {"tokens", "ast", "ir", "run", "all"}
+STAGES = {"tokens", "ast", "ir", "optimized", "run", "all"}
 
 
 @dataclass(frozen=True)
@@ -19,6 +20,9 @@ class PipelineResult:
     parse: ParseResult | None = None
     semantic: SemanticResult | None = None
     ir: IRProgram | None = None
+    optimization: OptimizationResult | None = None
+    optimized_ir: IRProgram | None = None
+    optimizer_errors: tuple[OptimizerDiagnostic, ...] = ()
     execution: ExecutionResult | None = None
 
 
@@ -29,19 +33,54 @@ def compile_source(source: str, *, stage: str = "all") -> PipelineResult:
 
     scan = Lexer(source).scan()
     if scan.errors or stage == "tokens":
-        return PipelineResult(scan)
+        return PipelineResult(scan=scan)
 
     parsed = Parser(scan.tokens).parse()
     if parsed.errors or stage == "ast":
-        return PipelineResult(scan, parsed)
+        return PipelineResult(scan=scan, parse=parsed)
 
     semantic = SemanticAnalyzer().analyze(parsed.program)
     if semantic.errors:
-        return PipelineResult(scan, parsed, semantic)
+        return PipelineResult(scan=scan, parse=parsed, semantic=semantic)
 
     intermediate = IRGenerator().generate(parsed.program)
     if stage == "ir":
-        return PipelineResult(scan, parsed, semantic, intermediate)
+        return PipelineResult(
+            scan=scan,
+            parse=parsed,
+            semantic=semantic,
+            ir=intermediate,
+        )
 
-    execution = Interpreter().execute(intermediate)
-    return PipelineResult(scan, parsed, semantic, intermediate, execution)
+    optimization = IROptimizer().optimize(intermediate)
+    if optimization.errors:
+        return PipelineResult(
+            scan=scan,
+            parse=parsed,
+            semantic=semantic,
+            ir=intermediate,
+            optimization=optimization,
+            optimizer_errors=optimization.errors,
+        )
+
+    optimized = optimization.optimized
+    if stage == "optimized":
+        return PipelineResult(
+            scan=scan,
+            parse=parsed,
+            semantic=semantic,
+            ir=intermediate,
+            optimization=optimization,
+            optimized_ir=optimized,
+        )
+
+    execution = Interpreter().execute(optimized)
+    return PipelineResult(
+        scan=scan,
+        parse=parsed,
+        semantic=semantic,
+        ir=intermediate,
+        optimization=optimization,
+        optimized_ir=optimized,
+        execution=execution,
+    )
