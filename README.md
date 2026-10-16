@@ -14,6 +14,8 @@ folder so that Phase 1, Phase 2, and Phase 3 can be demonstrated independently.
   reproducible evidence; final report and packaging are stored with it.
 - `deliverables/phase2/` — the Phase 2 project ZIP, Word report, and submission
   notes.
+- `deliverables/phase3/` — the final project ZIP, Word report, presentation, and
+  submission instructions.
 
 ## Run Phase 1
 
