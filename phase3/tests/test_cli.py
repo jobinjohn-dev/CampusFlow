@@ -36,10 +36,40 @@ class CliTests(unittest.TestCase):
         for heading in (
             "TOKENS",
             "ABSTRACT SYNTAX TREE",
-            "INTERMEDIATE CODE",
+            "ORIGINAL INTERMEDIATE CODE",
+            "OPTIMIZATION SUMMARY",
+            "OPTIMIZED INTERMEDIATE CODE",
             "FINAL RUNTIME STATE",
         ):
             self.assertIn(heading, completed.stdout)
+
+    def test_optimized_stage_prints_only_ir_and_optimization_sections(self):
+        completed = self.run_source(
+            "\n".join((
+                "EVENT Demo ON 2026-10-15 AT 10:00 TO 11:00;",
+                "RESERVE Hall FOR Demo CAPACITY 50;",
+                "IF capacity >= 20 THEN ASSIGN Projector TO Demo;",
+            )),
+            "--stage",
+            "optimized",
+        )
+
+        self.assertEqual(completed.returncode, 0)
+        headings = (
+            "ORIGINAL INTERMEDIATE CODE",
+            "OPTIMIZATION SUMMARY",
+            "OPTIMIZED INTERMEDIATE CODE",
+        )
+        positions = [completed.stdout.index(heading) for heading in headings]
+        self.assertEqual(positions, sorted(positions))
+        self.assertIn("Conditions folded true: 1", completed.stdout)
+        for omitted in (
+            "TOKENS",
+            "ABSTRACT SYNTAX TREE",
+            "SEMANTIC ANALYSIS",
+            "FINAL RUNTIME STATE",
+        ):
+            self.assertNotIn(omitted, completed.stdout)
 
     def test_tokens_stage_preserves_phase_one_output(self):
         completed = self.run_source(

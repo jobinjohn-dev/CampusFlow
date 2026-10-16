@@ -7,6 +7,7 @@ from .ast_nodes import format_ast
 from .interpreter import format_runtime
 from .ir import format_ir
 from .model import ScanResult
+from .optimizer import format_optimization
 from .pipeline import STAGES, compile_source
 
 
@@ -74,11 +75,40 @@ def format_result(
             f"assignments: {len(symbols.assignments)}"
         )
 
-    if stage in {"ir", "all"} and result.ir is not None:
+    if stage == "ir" and result.ir is not None:
         sections.append(
             "INTERMEDIATE CODE\n"
             "-----------------\n"
             f"{format_ir(result.ir)}"
+        )
+
+    if stage in {"optimized", "all"} and result.ir is not None:
+        sections.append(
+            "ORIGINAL INTERMEDIATE CODE\n"
+            "--------------------------\n"
+            f"{format_ir(result.ir)}"
+        )
+
+    if result.optimizer_errors:
+        sections.append("\n".join(_format_diagnostics(
+            "OPTIMIZER ERRORS", result.optimizer_errors
+        )))
+        return "\n\n".join(sections), 1
+
+    if (
+        stage in {"optimized", "all"}
+        and result.optimization is not None
+        and result.optimized_ir is not None
+    ):
+        sections.append(
+            "OPTIMIZATION SUMMARY\n"
+            "--------------------\n"
+            f"{format_optimization(result.optimization)}"
+        )
+        sections.append(
+            "OPTIMIZED INTERMEDIATE CODE\n"
+            "---------------------------\n"
+            f"{format_ir(result.optimized_ir)}"
         )
 
     if result.execution is not None and result.execution.errors:

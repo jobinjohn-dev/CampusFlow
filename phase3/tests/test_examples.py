@@ -28,6 +28,8 @@ class ExampleTests(unittest.TestCase):
     def test_valid_example_executes_every_statement_form(self):
         completed = self.run_example("valid.cflow")
         self.assertEqual(completed.returncode, 0)
+        self.assertIn("OPTIMIZATION SUMMARY", completed.stdout)
+        self.assertIn("OPTIMIZED INTERMEDIATE CODE", completed.stdout)
         self.assertIn("FINAL RUNTIME STATE", completed.stdout)
         self.assertIn("TechFest", completed.stdout)
         self.assertIn("Workshop", completed.stdout)
